@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>——转发好友共赏烟花吧——</title><style>
+body{
+background:black;
+overflow:hidden;
+margin:0;
+}
+canvas{
+background:#000000;
+position:fixed;
+top:0
+pointer-events：none
+}
+</style>
+</head>
+<body><h3 id="timer" style="color:#ffffff"></h3>
+<h3 id="timer1" style="color:#ffffff"></h3>
+<h3 id="timer2" style="color:#ffffff"></h3>
+<h3 id="timer3" style="color:#ffffff"></h3>
+<h3 id="timer4" style="color:#ffffff"></h3>
+<h3 id="timer5" style="color:#00ffff"></h3>
+<script>
+        var date=new Date();   
+		var year=date.getFullYear(); //获取当前年份   
+		var month=date.getMonth()+1; //获取当前月份   
+		var dat=date.getDate(); //获取当前日   
+		var hour=date.getHours(); //获取小时   
+		var minutes=date.getMinutes(); //获取分钟  
+		var timer=document.getElementById('timer');    
+		timer.innerHTML='&nbsp;&nbsp;现在是'+year+'年'+month+'月'+dat+'日，'+' '+hour+'时'+minutes+'分'; 
+switch(Math.floor(Math.random()*5)){
+case 0:
+setTimeout ("timer1.innerHTML='&nbsp;&nbsp;愿君在蛇年里，'","2000");
+setTimeout ("timer2.innerHTML='&nbsp;&nbsp;似灵蛇灵动，事业如藤蔓攀升，'","4000");
+setTimeout ("timer3.innerHTML='&nbsp;&nbsp;生活若繁花盛绽，好运常伴不歇。'","6000");break;
+case 1:
+setTimeout ("timer1.innerHTML='&nbsp;&nbsp;灵蛇献瑞新年到，祥气盈堂福泽高。'","2000");
+setTimeout ("timer2.innerHTML='&nbsp;&nbsp;愿您在这蛇年时光，'","4000");
+setTimeout ("timer3.innerHTML='&nbsp;&nbsp;心情似云般自在，收获像果般丰硕。'","6000");break;
+case 2:
+setTimeout ("timer1.innerHTML='&nbsp;&nbsp;祥蛇携运入新年，瑞彩环身好梦连。'","2000");
+setTimeout ("timer2.innerHTML='&nbsp;&nbsp;望新岁里，'","4000");
+setTimeout ("timer3.innerHTML='&nbsp;&nbsp;忧愁烦恼皆消散，欢颜笑语满人间。'","6000");break;
+case 3:
+setTimeout ("timer1.innerHTML='&nbsp;&nbsp;蛇年到，福气绕。'","2000");
+setTimeout ("timer2.innerHTML='&nbsp;&nbsp;愿你的生活如灵蛇般灵动， 智慧与幸运并存！'","4000");break;
+case 4:
+setTimeout ("timer1.innerHTML='&nbsp;&nbsp;数域值域定义域域域顺心'","2000");
+setTimeout ("timer2.innerHTML='&nbsp;&nbsp;相福抱福集五福福福到家'","4000");break;
+case 5:
+
+}
+</script>
+<div>
+  <canvas id="canvas"></canvas>
+</div>
+<script>
+window.addEventListener("resize", resizeCanvas, false);
+window.addEventListener("DOMContentLoaded", onLoad, false);
+window.requestAnimationFrame = 
+window.requestAnimationFrame       || 
+window.webkitRequestAnimationFrame || 
+window.mozRequestAnimationFrame    || 
+window.oRequestAnimationFrame      || 
+window.msRequestAnimationFrame     || 
+function (callback) {
+  window.setTimeout(callback, 1000/60);
+};
+var canvas, ctx, w, h, particles = [], probability = 0.04,
+   xPoint, yPoint;
+function onLoad() {
+   canvas = document.getElementById("canvas");
+   ctx = canvas.getContext("2d");
+   resizeCanvas();     
+   window.requestAnimationFrame(updateWorld);
+} 
+
+function resizeCanvas() {
+   if (!!canvas) {
+       w = canvas.width = window.innerWidth;
+       h = canvas.height = window.innerHeight;
+   }
+} 
+
+function updateWorld() {
+   update();
+   paint();
+   window.requestAnimationFrame(updateWorld);
+} 
+
+function update() {
+   if (particles.length < 500 && Math.random() < probability) {
+       createFirework();
+   }
+   var alive = [];
+   for (var i=0; i<particles.length; i++) {
+       if (particles[i].move()) {
+           alive.push(particles[i]);
+       }
+   }
+   particles = alive;
+} 
+
+function paint() {
+   ctx.globalCompositeOperation = 'source-over';
+   ctx.fillStyle = "rgba(0,0,0,0.2)";
+   ctx.fillRect(0, 0, w, h);
+   ctx.globalCompositeOperation = 'lighter';
+   for (var i=0; i<particles.length; i++) {
+       particles[i].draw(ctx);
+   }
+} 
+
+function createFirework() {
+   xPoint = Math.random()*(w-200)+100;
+   yPoint = Math.random()*(h-200)+100;
+   var nFire = Math.random()*50+100;
+   var c = "rgb("+(~~(Math.random()*200+55))+","
+        +(~~(Math.random()*200+55))+","+(~~(Math.random()*200+55))+")";
+   for (var i=0; i<nFire; i++) {
+       var particle = new Particle();
+       particle.color = c;
+       var vy = Math.sqrt(25-particle.vx*particle.vx);
+       if (Math.abs(particle.vy) > vy) {
+           particle.vy = particle.vy>0 ? vy: -vy;
+       }
+       particles.push(particle);
+   }
+} 
+
+function Particle() {
+   this.w = this.h = Math.random()*4+1;  
+   this.x = xPoint-this.w/2;
+   this.y = yPoint-this.h/2;     
+   this.vx = (Math.random()-0.5)*10;
+   this.vy = (Math.random()-0.5)*10;    
+   this.alpha = Math.random()*.5+.5;     
+   this.color;
+} 
+
+Particle.prototype = {
+   gravity: 0.05,
+   move: function () {
+       this.x += this.vx;
+       this.vy += this.gravity;
+       this.y += this.vy;
+       this.alpha -= 0.01;
+       if (this.x <= -this.w || this.x >= screen.width ||
+           this.y >= screen.height ||
+           this.alpha <= 0) {
+               return false;
+       }
+       return true;
+   },
+   draw: function (c) {
+       c.save();
+       c.beginPath();         
+       c.translate(this.x+this.w/2, this.y+this.h/2);
+       c.arc(0, 0, this.w, 0, Math.PI*2);
+       c.fillStyle = this.color;
+       c.globalAlpha = this.alpha;         
+       c.closePath();
+       c.fill();
+       c.restore();
+   }
+} 
+$(function () {
+    var myAuto = document.getElementById('myaudio');
+    myAuto.play();
+})
+</script>
+<audio id="myaudio" src="https://livefile.xesimg.com/programme/python_assets/089fe91c6f2d84b011f5b80e5575393d.mp3" controls="controls" autoplay loop="true" hidden="true">
+</audio>
+</body>
+</html>
